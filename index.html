@@ -300,13 +300,13 @@
                 <!-- IDENTITAS -->
                 <div class="space-y-5">
                     <div>
-                        <label class="field-label">Siapa nama Anda?</label>
+                        <label class="field-label">NAMA LENGKAP</label>
                         <input type="text" id="nama" name="nama" required class="input-style w-full px-5 py-4 text-sm" placeholder="Masukkan nama lengkap...">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
-                            <label class="field-label">Di unit mana?</label>
+                            <label class="field-label">UNIT KERJA</label>
                             <div class="relative">
                                 <select id="unit_kerja" name="unit_kerja" required onchange="renderJobdeskOptions()" class="input-style w-full px-5 py-4 text-sm appearance-none cursor-pointer">
                                     <option value="" disabled selected>Pilih Unit</option>
@@ -321,7 +321,7 @@
                             </div>
                         </div>
                         <div>
-                            <label class="field-label">Apa jabatannya?</label>
+                            <label class="field-label">JABATAN</label>
                             <input type="text" id="jabatan" name="jabatan" required class="input-style w-full px-5 py-4 text-sm" placeholder="Contoh: Staff IT">
                         </div>
                     </div>
@@ -329,7 +329,7 @@
 
                 <!-- STATUS -->
                 <div>
-                    <label class="field-label">Bagaimana kabarnya?</label>
+                    <label class="field-label">STATUS KEHADIRAN</label>
                     <div class="relative">
                         <select id="status" name="status" onchange="handleStatusChange()" class="input-style w-full px-5 py-4 text-sm appearance-none cursor-pointer">
                             <option value="Hadir">🟢 Hadir Bekerja</option>
@@ -359,7 +359,7 @@
                 <!-- JOBDESK -->
                 <div id="jobdesk_section" class="hidden-el">
                     <div class="mb-4 flex items-center gap-2">
-                        <label class="field-label mb-0">Apa yang dikerjakan hari ini?</label>
+                        <label class="field-label mb-0">KATEGORI JOBDESK</label>
                         <span class="text-[9px] font-bold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full uppercase tracking-wider italic">(Pilih satu atau lebih)</span>
                     </div>
                     
@@ -368,7 +368,7 @@
 
                     <div id="container_jurnal" class="animation-expand">
                         <div class="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm mt-4">
-                            <label class="field-label" style="color: #64748b;">Ada catatan tambahan?</label>
+                            <label class="field-label" style="color: #64748b;">CATATAN AKTIVITAS</label>
                             <textarea id="jurnal" name="jurnal" rows="4" class="input-style w-full px-4 py-3 text-sm resize-none" placeholder="Tuliskan progres atau kendala di sini..."></textarea>
                         </div>
                     </div>
@@ -377,7 +377,7 @@
                 <!-- LOKASI -->
                 <div class="p-5 bg-slate-50/50 rounded-3xl border border-dashed border-slate-200">
                     <div class="flex items-center justify-between mb-3">
-                        <label class="field-label mb-0">Di mana posisi Anda?</label>
+                        <label class="field-label mb-0">VALIDASI LOKASI</label>
                         <button type="button" onclick="getLocation()" class="text-[10px] text-blue-600 font-bold uppercase tracking-wider">Update Lokasi</button>
                     </div>
                     <p id="locStatus" class="text-[10px] text-slate-400 mb-2 font-medium italic text-center">Menunggu GPS...</p>
@@ -388,7 +388,7 @@
                 </div>
 
                 <button type="submit" id="btnSubmit" class="btn-submit w-full text-white font-black py-5 flex justify-center items-center gap-3 uppercase tracking-[0.2em] text-xs">
-                    Kirim Laporan
+                    KIRIM PRESENSI
                 </button>
             </form>
         </div>
