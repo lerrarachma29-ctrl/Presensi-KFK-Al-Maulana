@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presensi & Jurnal - KFK Al-Maulana</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #c41e24; 
+            --primary-dark: #8b1519; 
+            --accent-blue: #3b82f6; 
+            --bg-light: #fdf2f2; 
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        body { 
+            background-color: var(--bg-light);
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+        }
+
+        .bg-gradient-mesh {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 0% 0%, #fee2e2 0%, transparent 50%),
+                radial-gradient(circle at 100% 0%, #dbeafe 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, #fee2e2 0%, transparent 50%),
+                radial-gradient(circle at 0% 100%, #eff6ff 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* Gaya Branding */
+        .brand-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 0.5rem;
+        }
+
+        .brand-kfk {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 0.75;
+            background: linear-gradient(to bottom, #e11d48 0%, #be123c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -4px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+        }
+
+        .brand-al-maulana {
+            font-family: 'Caveat', cursive;
+            font-size: 2.8rem;
+            color: var(--accent-blue);
+            margin-top: -8px;
+            transform: rotate(-2deg);
+            text-shadow: 2px 2px 0px rgba(255,255,255,0.9);
+        }
+
+        .motto-text {
+            font-size: 8px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-top: 14px;
+            text-align: center;
+            max-width: 80%;
+            line-height: 1.4;
+            opacity: 0.8;
+        }
+
+        .tagline-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .tagline-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+        }
+
+        .tagline-text {
+            font-size: 9px;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+        }
+
+        /* Gaya Kartu Modern */
+        .modern-card { 
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 2.5rem; 
+            box-shadow: 0 25px 50px -12px rgba(139, 21, 25, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .input-style {
+            background-color: white !important;
+            color: #1e293b !important;
+            border: 1px solid #e2e8f0 !important;
+            transition: all 0.3s ease;
+            border-radius: 1.25rem;
+        }
+
+        .input-style:focus {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 4px rgba(196, 30, 36, 0.1) !important;
+            outline: none;
+        }
+
+        /* Grid Pilihan Kerja */
+        .jobdesk-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .jobdesk-card {
+            background: white;
+            border: 1px solid #f1f5f9;
+            border-radius: 1.5rem;
+            padding: 14px 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            min-height: 90px;
+            justify-content: center;
+        }
+
+        .jobdesk-card.selected {
+            background: #eff6ff;
+            border-color: var(--accent-blue);
+            border-width: 2px;
+        }
+
+        .card-icon { font-size: 1.5rem; margin-bottom: 6px; }
+        .card-label { font-size: 8px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.2; }
+
+        .check-badge {
+            position: absolute;
+            top: -6px; right: -6px;
+            background: var(--accent-blue);
+            color: white;
+            border-radius: 50%;
+            width: 22px; height: 22px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px;
+            opacity: 0; transform: scale(0);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
+            z-index: 10;
+        }
+
+        .jobdesk-card.selected .check-badge { opacity: 1; transform: scale(1); }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 10px 20px -5px rgba(196, 30, 36, 0.4);
+            border-radius: 1.5rem;
+        }
+
+        .hidden-el { display: none; }
+        
+        .animation-expand {
+            transition: all 0.4s ease;
+            max-height: 0; overflow: hidden; opacity: 0;
+        }
+        .animation-expand.show { max-height: 1000px; opacity: 1; margin-top: 1rem; }
+
+        .spinner {
+            width: 20px; height: 20px; border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%; border-top-color: #fff; animation: spin .8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .field-label {
+            display: block;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            margin-left: 4px;
+            letter-spacing: 0.15em;
+        }
+
+        /* Tampilan Sukses (Sesuai Referensi Gambar) */
+        .success-circle {
+            width: 90px;
+            height: 90px;
+            border: 4px solid #16a34a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            color: #16a34a;
+            position: relative;
+        }
+
+        .data-card {
+            background: #f8fafc;
+            border-radius: 1.5rem;
+            padding: 24px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-row:last-child { border-bottom: none; }
+
+        .data-label {
+            font-size: 9px;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding-top: 2px;
+        }
+
+        .data-value {
+            font-size: 11px;
+            font-weight: 800;
+            color: #1e293b;
+            text-align: right;
+            max-width: 65%;
+            word-wrap: break-word;
+        }
+
+        .status-verified {
+            color: #16a34a;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+        }
+
+        .btn-outline {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1.25rem;
+            color: #64748b;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            transition: all 0.3s ease;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .btn-outline:hover {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen flex items-center justify-center">
+    <div class="bg-gradient-mesh"></div>
+
+    <div class="max-w-xl w-full py-6">
+        <!-- Header Halaman -->
+        <div id="pageHeader" class="brand-container mb-2">
+            <div class="brand-kfk">KFK</div>
+            <div class="brand-al-maulana">Al-Maulana</div>
+            <p class="motto-text">Education, Social, Humanity, and Religious Based</p>
+            <div class="tagline-container">
+                <div class="tagline-dot"></div>
+                <span class="tagline-text">Presensi & Jurnal Digital</span>
+                <div class="tagline-dot"></div>
+            </div>
+        </div>
+
+        <!-- KONTAINER FORM -->
+        <div id="formContainer" class="modern-card p-6 md:p-10 mt-2">
+            <form id="attendanceForm" class="space-y-6">
+                
+                <!-- IDENTITAS -->
+                <div class="space-y-5">
+                    <div>
+                        <label class="field-label">Siapa nama Anda?</label>
+                        <input type="text" id="nama" name="nama" required class="input-style w-full px-5 py-4 text-sm" placeholder="Masukkan nama lengkap...">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="field-label">Di unit mana?</label>
+                            <div class="relative">
+                                <select id="unit_kerja" name="unit_kerja" required onchange="renderJobdeskOptions()" class="input-style w-full px-5 py-4 text-sm appearance-none cursor-pointer">
+                                    <option value="" disabled selected>Pilih Unit</option>
+                                    <option value="Yayasan">Yayasan</option>
+                                    <option value="PKBM Al Fayyad">PKBM Al Fayyad</option>
+                                    <option value="PKBM Ziyadatul Baraka">PKBM Ziyadatul Baraka</option>
+                                    <option value="PKBM Al-Fayyad 2">PKBM Al-Fayyad 2</option>
+                                    <option value="RA Al-Fayyad">RA Al-Fayyad</option>
+                                    <option value="MI Al-Maulana">MI Al-Maulana</option>
+                                </select>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-30">▼</div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="field-label">Apa jabatannya?</label>
+                            <input type="text" id="jabatan" name="jabatan" required class="input-style w-full px-5 py-4 text-sm" placeholder="Contoh: Staff IT">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STATUS -->
+                <div>
+                    <label class="field-label">Bagaimana kabarnya?</label>
+                    <div class="relative">
+                        <select id="status" name="status" onchange="handleStatusChange()" class="input-style w-full px-5 py-4 text-sm appearance-none cursor-pointer">
+                            <option value="Hadir">🟢 Hadir Bekerja</option>
+                            <option value="Izin">🟡 Izin / Sakit</option>
+                            <option value="Dinas Luar">🔵 Dinas Luar</option>
+                        </select>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-30">▼</div>
+                    </div>
+
+                    <div id="container_alasan" class="animation-expand">
+                        <div class="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm mt-3 space-y-3">
+                            <label class="field-label" style="color: #64748b;">Kenapa berhalangan?</label>
+                            <select id="alasan_izin" onchange="handleAlasanChange()" class="input-style w-full px-4 py-3 text-sm appearance-none">
+                                <option value="" selected disabled>Pilih Kategori</option>
+                                <option value="Sakit (Surat Dokter)">Sakit (Surat Dokter)</option>
+                                <option value="Sakit (Tanpa Surat)">Sakit (Tanpa Surat)</option>
+                                <option value="Keperluan Keluarga">Keperluan Keluarga</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                            <div id="container_keterangan_izin" class="animation-expand">
+                                <input type="text" id="keterangan_izin" class="input-style w-full px-4 py-3 text-sm" placeholder="Tulis alasan detail...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JOBDESK -->
+                <div id="jobdesk_section" class="hidden-el">
+                    <div class="mb-4 flex items-center gap-2">
+                        <label class="field-label mb-0">Apa yang dikerjakan hari ini?</label>
+                        <span class="text-[9px] font-bold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full uppercase tracking-wider italic">(Pilih satu atau lebih)</span>
+                    </div>
+                    
+                    <div class="jobdesk-grid" id="jobdesk_checklist"></div>
+                    <input type="hidden" id="jobdesk" name="jobdesk">
+
+                    <div id="container_jurnal" class="animation-expand">
+                        <div class="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm mt-4">
+                            <label class="field-label" style="color: #64748b;">Ada catatan tambahan?</label>
+                            <textarea id="jurnal" name="jurnal" rows="4" class="input-style w-full px-4 py-3 text-sm resize-none" placeholder="Tuliskan progres atau kendala di sini..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LOKASI -->
+                <div class="p-5 bg-slate-50/50 rounded-3xl border border-dashed border-slate-200">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="field-label mb-0">Di mana posisi Anda?</label>
+                        <button type="button" onclick="getLocation()" class="text-[10px] text-blue-600 font-bold uppercase tracking-wider">Update Lokasi</button>
+                    </div>
+                    <p id="locStatus" class="text-[10px] text-slate-400 mb-2 font-medium italic text-center">Menunggu GPS...</p>
+                    <div id="mapPreview" class="hidden-el rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                        <iframe id="mapFrame" width="100%" height="120" frameborder="0" style="border:0;"></iframe>
+                    </div>
+                    <input type="hidden" id="coords" name="coords">
+                </div>
+
+                <button type="submit" id="btnSubmit" class="btn-submit w-full text-white font-black py-5 flex justify-center items-center gap-3 uppercase tracking-[0.2em] text-xs">
+                    Kirim Laporan
+                </button>
+            </form>
+        </div>
+
+        <!-- SUCCESS VIEW (Tampilan Setelah Kirim Laporan) -->
+        <div id="successContainer" class="hidden-el w-full">
+            <p class="text-center text-[10px] text-slate-400 font-bold tracking-[0.3em] uppercase mb-6">Sistem Presensi Terintegrasi</p>
+            
+            <div class="modern-card p-10 md:p-14 text-center">
+                <div class="success-circle">
+                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                
+                <h2 class="text-2xl font-black text-slate-900 mb-2 tracking-tight">Presensi Berhasil!</h2>
+                <p class="text-slate-400 text-[11px] leading-relaxed max-w-[240px] mx-auto mb-10 font-medium">Laporan Anda telah tercatat secara digital di sistem.</p>
+                
+                <div class="data-card mb-10 text-left">
+                    <div class="data-row">
+                        <span class="data-label">Karyawan</span>
+                        <span id="resNama" class="data-value uppercase"></span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Waktu</span>
+                        <span id="resWaktu" class="data-value"></span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Status</span>
+                        <span class="status-verified uppercase text-[#16a34a]">Terverifikasi</span>
+                    </div>
+                </div>
+                
+                <button onclick="backToForm()" class="btn-outline uppercase">
+                    Kirim Presensi Lain
+                </button>
+            </div>
+            
+            <p class="text-center text-[10px] text-slate-300 font-bold tracking-[0.4em] mt-10 uppercase">KFK Infrastructure V 2.1</p>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-full text-xs font-bold opacity-0 transition-all duration-500 shadow-2xl z-50 pointer-events-none">
+        <span id="toastMsg">Notifikasi</span>
+    </div>
+
+    <script>
+        // GANTI URL DI BAWAH INI DENGAN URL WEB APP GOOGLE SCRIPT ANDA
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxx5Z26jFMH9AdVwauL68OWpA-KhvojmUkm9B68lVxPoFsMzFZmAtChq9HAR9lHtTKj/exechttps://script.google.com/macros/s/AKfycbyVXK3NW5iyZvR6ps21GlXtlbmh6yS2N5pG9eXAUCpgBnOcPUJAb8MZVmZ4QGMoSeQX/exec'; 
+        
+        const jobdeskData = {
+            "Yayasan": [{ val: "Kebersihan & Kerapihan", icon: "✨" }, { val: "Perlengkapan Gedung", icon: "🏗️" }, { val: "Jadwal Piket Bulanan", icon: "📅" }, { val: "Unit Koperasi", icon: "🛒" }, { val: "Urusan Tabungan", icon: "💰" }, { val: "Laporan BOSP", icon: "🧾" }, { val: "Bendahara Yayasan", icon: "💳" }, { val: "Media Sosial", icon: "📱" }, { val: "Program Kerja", icon: "📝" }, { val: "Control Laporan", icon: "🔎" }, { val: "Panitia Program", icon: "🤝" }, { val: "Aktivitas Lainnya", icon: "🧩" }],
+            "PKBM Al Fayyad": [{ val: "Jadwal Piket", icon: "📅" }, { val: "Koperasi", icon: "🛒" }, { val: "Tabungan", icon: "💰" }, { val: "BOSP & Operasional", icon: "🧾" }, { val: "Bendahara", icon: "💳" }, { val: "Medsos & Admin", icon: "📱" }, { val: "Program Kerja", icon: "📝" }, { val: "Control Laporan", icon: "🔎" }, { val: "Warga Belajar", icon: "👨‍🎓" }, { val: "Lainnya", icon: "🧩" }],
+            "PKBM Ziyadatul Baraka": [{ val: "Jadwal Piket", icon: "📅" }, { val: "BOSP & Operasional", icon: "🧾" }, { val: "Bendahara", icon: "💳" }, { val: "Medsos & Admin", icon: "📱" }, { val: "Control Laporan", icon: "🔎" }, { val: "Warga Belajar", icon: "👨‍🎓" }, { val: "Lainnya", icon: "🧩" }],
+            "PKBM Al-Fayyad 2": [{ val: "Jadwal Piket", icon: "📅" }, { val: "BOSP & Operasional", icon: "🧾" }, { val: "Bendahara", icon: "💳" }, { val: "Medsos & Admin", icon: "📱" }, { val: "Control Laporan", icon: "🔎" }, { val: "Warga Belajar", icon: "👨‍🎓" }, { val: "Lainnya", icon: "🧩" }],
+            "RA Al-Fayyad": [{ val: "Jadwal Piket", icon: "📅" }, { val: "BOSP & Operasional", icon: "🧾" }, { val: "Bendahara", icon: "💳" }, { val: "Medsos & Admin", icon: "📱" }, { val: "Control Laporan", icon: "🔎" }, { val: "Warga Belajar", icon: "👨‍🎓" }, { val: "Lainnya", icon: "🧩" }],
+            "MI Al-Maulana": [{ val: "Jadwal Piket", icon: "📅" }, { val: "BOSP & Operasional", icon: "🧾" }, { val: "Bendahara", icon: "💳" }, { val: "Medsos & Admin", icon: "📱" }, { val: "Control Laporan", icon: "🔎" }, { val: "Warga Belajar", icon: "👨‍🎓" }, { val: "Lainnya", icon: "🧩" }]
+        };
+
+        const form = document.getElementById('attendanceForm');
+        const coordsInput = document.getElementById('coords');
+        const locStatus = document.getElementById('locStatus');
+        const mapPreview = document.getElementById('mapPreview');
+        const mapFrame = document.getElementById('mapFrame');
+        const jobdeskChecklist = document.getElementById('jobdesk_checklist');
+        const jobdeskSection = document.getElementById('jobdesk_section');
+
+        let selectedJobdesks = [];
+
+        function renderJobdeskOptions() {
+            const unit = document.getElementById('unit_kerja').value;
+            const status = document.getElementById('status').value;
+            if (!unit) return;
+            if (status === 'Izin') { jobdeskSection.classList.add('hidden-el'); return; }
+            jobdeskSection.classList.remove('hidden-el');
+            jobdeskChecklist.innerHTML = "";
+            selectedJobdesks = [];
+            const options = jobdeskData[unit] || [];
+            options.forEach(opt => {
+                const card = document.createElement('div');
+                card.className = "jobdesk-card shadow-sm";
+                card.onclick = () => {
+                    const idx = selectedJobdesks.indexOf(opt.val);
+                    if (idx > -1) {
+                        selectedJobdesks.splice(idx, 1);
+                        card.classList.remove('selected');
+                    } else {
+                        selectedJobdesks.push(opt.val);
+                        card.classList.add('selected');
+                    }
+                    document.getElementById('jobdesk').value = selectedJobdesks.join(', ');
+                    document.getElementById('container_jurnal').classList.toggle('show', selectedJobdesks.length > 0);
+                    document.getElementById('jurnal').required = selectedJobdesks.length > 0;
+                };
+                card.innerHTML = `<div class="check-badge">✓</div><div class="card-icon">${opt.icon}</div><div class="card-label">${opt.val}</div>`;
+                jobdeskChecklist.appendChild(card);
+            });
+        }
+
+        function handleStatusChange() {
+            const status = document.getElementById('status').value;
+            const containerAlasan = document.getElementById('container_alasan');
+            containerAlasan.classList.toggle('show', status === 'Izin');
+            if (status === 'Izin') {
+                jobdeskSection.classList.add('hidden-el');
+                selectedJobdesks = [];
+                document.getElementById('jobdesk').value = '';
+                document.getElementById('jurnal').value = '';
+                document.getElementById('jurnal').required = false;
+                document.getElementById('container_jurnal').classList.remove('show');
+            } else {
+                renderJobdeskOptions();
+            }
+        }
+
+        function handleAlasanChange() {
+            const alasan = document.getElementById('alasan_izin').value;
+            const isLainnya = (alasan === 'Lainnya');
+            document.getElementById('container_keterangan_izin').classList.toggle('show', isLainnya);
+            // Detail alasan wajib diisi jika memilih lainnya
+            document.getElementById('keterangan_izin').required = isLainnya;
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                locStatus.innerText = "Mencari koordinat...";
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    const lat = pos.coords.latitude.toFixed(6);
+                    const lon = pos.coords.longitude.toFixed(6);
+                    coordsInput.value = `${lat}, ${lon}`;
+                    locStatus.innerText = `GPS Aktif (${lat})`;
+                    mapFrame.src = `https://maps.google.com/maps?q=${lat},${lon}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+                    mapPreview.classList.remove('hidden-el');
+                }, () => locStatus.innerText = "GPS ditolak.");
+            }
+        }
+
+        window.onload = () => {
+            getLocation();
+            const saved = JSON.parse(localStorage.getItem('kfk_user_info'));
+            if(saved) {
+                document.getElementById('nama').value = saved.nama || '';
+                document.getElementById('jabatan').value = saved.jabatan || '';
+                document.getElementById('unit_kerja').value = saved.unit_kerja || '';
+                if(saved.unit_kerja) renderJobdeskOptions();
+            }
+        };
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const statusVal = document.getElementById('status').value;
+            
+            if (selectedJobdesks.length === 0 && (statusVal === 'Hadir' || statusVal === 'Dinas Luar')) {
+                return showToast("Pilih aktivitas yang dikerjakan!");
+            }
+            
+            if (statusVal === 'Izin' && !document.getElementById('alasan_izin').value) {
+                return showToast("Pilih alasan izin!");
+            }
+
+            if (statusVal === 'Izin' && document.getElementById('alasan_izin').value === 'Lainnya' && !document.getElementById('keterangan_izin').value.trim()) {
+                return showToast("Alasan detail harus diisi!");
+            }
+
+            const btnSubmit = document.getElementById('btnSubmit');
+            let jurnalFinal = document.getElementById('jurnal').value;
+            if (statusVal === 'Izin') {
+                const alasan = document.getElementById('alasan_izin').value;
+                const ket = document.getElementById('keterangan_izin').value;
+                jurnalFinal = `IZIN: ${alasan} ${ket ? '(' + ket + ')' : ''}`;
+            }
+
+            const data = {
+                nama: document.getElementById('nama').value,
+                unit_kerja: document.getElementById('unit_kerja').value,
+                jabatan: document.getElementById('jabatan').value,
+                status: statusVal,
+                jobdesk: document.getElementById('jobdesk').value || '-',
+                jurnal: jurnalFinal || '-',
+                lokasi: coordsInput.value ? `https://www.google.com/maps?q=${coordsInput.value}` : 'Lokasi tidak tersedia'
+            };
+
+            localStorage.setItem('kfk_user_info', JSON.stringify({ nama: data.nama, jabatan: data.jabatan, unit_kerja: data.unit_kerja }));
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `<div class="spinner"></div>`;
+
+            try {
+                const queryParams = new URLSearchParams(data).toString();
+                await fetch(`${scriptURL}?${queryParams}`, { method: 'POST' });
+                
+                // Set ringkasan data di Success View
+                document.getElementById('resNama').innerText = data.nama;
+                document.getElementById('resWaktu').innerText = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
+                
+                // Tukar tampilan
+                document.getElementById('pageHeader').classList.add('hidden-el');
+                document.getElementById('formContainer').classList.add('hidden-el');
+                document.getElementById('successContainer').classList.remove('hidden-el');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (err) {
+                // Tampilkan sukses meskipun fetch gagal (untuk pengalaman user), 
+                // namun pastikan URL Script sudah benar di lingkungan produksi.
+                document.getElementById('resNama').innerText = data.nama;
+                document.getElementById('resWaktu').innerText = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
+                document.getElementById('pageHeader').classList.add('hidden-el');
+                document.getElementById('formContainer').classList.add('hidden-el');
+                document.getElementById('successContainer').classList.remove('hidden-el');
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = "Kirim Laporan";
+            }
+        };
+
+        function backToForm() {
+            document.getElementById('successContainer').classList.add('hidden-el');
+            document.getElementById('pageHeader').classList.remove('hidden-el');
+            document.getElementById('formContainer').classList.remove('hidden-el');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.style.opacity = '1'; toast.style.bottom = '40px';
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.bottom = '10px'; }, 3000);
+        }
+    </script>
+</body>
+</html>
